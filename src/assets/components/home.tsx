@@ -1,4 +1,38 @@
-const Home = () => {
+import { useEffect, useState } from 'react'
+import { supabase } from '../../lib/supabaseClient'
+import { type User } from '../Interface/User'
+
+
+function Home() {
+  const [users, setUsers] = useState<User[]>([])
+
+  async function getusers() {
+    const { data, error } = await supabase.from('user').select('id, name, pass')
+
+    if (error) {
+      console.error(error)
+      return
+    }
+
+    setUsers(data ?? [])
+  }
+
+  useEffect(() => {
+    getusers()
+  }, [])
+
+  return (
+    <ul>
+      {users.map((user) => (
+        <li key={user.id}>{user.name}: {user.pass}</li>
+      ))}
+    </ul>
+  )
+}
+
+export default Home
+
+/*const Home = () => {
   return (
     <div className="flex min-h-screen items-center justify-center px-4 bg-gray-800">
         <div className="w-full max-w-md p-6 border-2 border-olive-300 rounded-lg shadow-md flex items-center justify-center flex-col gap-4">
@@ -15,3 +49,4 @@ const Home = () => {
 }
 
 export default Home
+*/
