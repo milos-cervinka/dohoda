@@ -27,7 +27,7 @@ const Register = () => {
           >
             Register
           </button>
-          <p>
+          <p className="text-olive-300">
             <Link to="/login">Already have an account? Login</Link>
           </p>
         </form>

@@ -22,7 +22,7 @@ const Login = () => {
           >
             Login
           </button>
-          <p>
+          <p className="text-olive-300">
             <Link to="/register">Don't have an account? Register</Link>
           </p>
         </form>
