@@ -1,53 +1,59 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient'
 
 const Register = () => {
-  const send = async (name: string, pass: string) => {
-    try {
-      const { error } = await supabase
-        .from('user')
-        .insert({ name, pass });
-        if (error) {
-          console.error('Error inserting user:', error);
-        }
-    } catch (error) {
-      console.error('Error inserting user:', error);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [repeatPassword, setRepeatPassword] = useState('');
+  const [error, setError] = useState('');
+  
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (password !== repeatPassword) {
+      setError('Passwords do not match');
+      return;
     }
-  }
+
+    const { error: dbError } = await supabase
+      .from('user')
+      .insert({ name: username, pass: password });
+
+    if (dbError) {
+      setError(dbError.message);
+      return;
+    }
+
+    setError('User registered successfully! You can now log in.');
+  };
   
   return (
     <div className="flex min-h-screen items-center justify-center px-4 bg-gray-800">
       <div className="w-full max-w-md p-6 border-2 border-olive-300 rounded-lg shadow-md flex items-center justify-center flex-col gap-4">
         <h1 className="text-2xl font-bold text-olive-300">Registrace</h1>
-        <form 
-          className="w-full flex flex-col gap-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            if ((e.target as any).password.value == (e.target as any)['repeat-password'].value) {
-              send(e.bubbles ? (e.target as any).username.value : '', e.bubbles ? (e.target as any).password.value : '');
-            } else {
-              const errorSpace = document.getElementById('errorSpace');
-              if (errorSpace) {
-                errorSpace.textContent = 'Passwords do not match';
-              }
-            }
-          }}
-          >
+        <form
+        onSubmit={handleSubmit} 
+        className="w-full flex flex-col gap-4">
           <input
-            id="username"
+            onChange={(e) => setUsername(e.target.value)}
             type="text"
+            value={username}
             placeholder="Username"
             className="text-olive-300 placeholder:text-olive-500 w-full px-4 py-2 border border-olive-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <input
-            id="password"
+            onChange={(e) => setPassword(e.target.value)}
             type="password"
+            value={password}
             placeholder="Password"
             className="text-olive-300 placeholder:text-olive-500 w-full px-4 py-2 border border-olive-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <input
-            id="repeat-password"
+            onChange={(e) => setRepeatPassword(e.target.value)}
             type="password"
+            value={repeatPassword}
             placeholder="Repeat password"
             className="text-olive-300 placeholder:text-olive-500 w-full px-4 py-2 border border-olive-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -61,7 +67,7 @@ const Register = () => {
             <Link to="/login">Already have an account? Login</Link>
           </p>
         </form>
-        <div className="text-red-600" id="errorSpace"></div>
+        {error && <div className="text-red-600">{error}</div>}
       </div>
     </div>
   )
