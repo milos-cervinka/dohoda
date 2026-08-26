@@ -3,44 +3,41 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient'
 
 const Register = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const [error, setError] = useState('');
   
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+  async function signUpNewUser(e:React.FormEvent) {
+      e.preventDefault();
+      setError('');
 
-    if (password !== repeatPassword) {
-      setError('Passwords do not match');
-      return;
+      if (password !== repeatPassword) {
+        setError('Passwords do not match');
+        return;
+      }
+
+      const {error} = await supabase.auth.signUp({
+        email: email,
+        password: password,
+      })
+      error ? setError(error.message) : setError("You can login")
+      
     }
 
-    const { error: dbError } = await supabase
-      .from('user')
-      .insert({ name: username, pass: password });
-
-    if (dbError) {
-      setError(dbError.message);
-      return;
-    }
-
-    setError('User registered successfully! You can now log in.');
-  };
   
   return (
     <div className="flex min-h-screen items-center justify-center px-4 bg-gray-800">
       <div className="w-full max-w-md p-6 border-2 border-olive-300 rounded-lg shadow-md flex items-center justify-center flex-col gap-4">
         <h1 className="text-2xl font-bold text-olive-300">Registrace</h1>
         <form
-        onSubmit={handleSubmit} 
+        onSubmit={signUpNewUser} 
         className="w-full flex flex-col gap-4">
           <input
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             type="text"
-            value={username}
-            placeholder="Username"
+            value={email}
+            placeholder="Email"
             className="text-olive-300 placeholder:text-olive-500 w-full px-4 py-2 border border-olive-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <input
