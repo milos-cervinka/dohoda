@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './assets/components/login';
-import Register from './assets/components/register';
-import Home from './assets/components/home';
+import Login from './pages/login';
+import Register from './pages/register';
+import Home from './pages/home';
 
 
 export default function App() {

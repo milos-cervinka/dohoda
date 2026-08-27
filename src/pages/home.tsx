@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '../../lib/supabaseClient'
-import { type User } from '../Interface/User'
+import { supabase } from '../services/supabaseClient'
+import { type User } from '../types/User'
 
 
 function Home() {
