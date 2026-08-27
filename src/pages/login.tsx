@@ -1,21 +1,22 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
 import { useState } from 'react';
 
 const Login = () => {
   const [email, setEmail ] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   async function signInWithEmail(e:React.FormEvent) {
     e.preventDefault()
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password
     })
     if (error) {
       console.log(error)
     } else {
-      console.log(data)
+      navigate('/home');
     }
   }
 
